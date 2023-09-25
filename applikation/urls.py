@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-import ibdr_application.views
+from ibdr_application import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('forms/', views.Ibd_Apllicate.as_view()),
     # Тут надо будет прописать пути!!!
 ]

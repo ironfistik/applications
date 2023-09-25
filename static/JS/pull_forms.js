@@ -22,9 +22,11 @@ function pull(){
 	
 	if(examination != ''){alert(examination)}
 	else{
-		let arrayJSON=[];
-		const objJSON = new Object();
+		let arrayJSON=Array();
+
+
 		document.querySelectorAll('.line').forEach((tr) =>{
+		const objJSON = new Object();
 			tr.querySelectorAll('td').forEach((td)=>{
 				const child = td.firstElementChild; 
 				let vid_uch=[];  
@@ -35,11 +37,12 @@ function pull(){
 			});
 		arrayJSON.push(objJSON);
 		console.log(JSON.stringify(objJSON));
+
 		});
 
 		$.ajax({
 			type:"POST",
-			url:"index.php",
+			url:"http://127.0.0.1:8000/forms/",
 			cache: false,
 			contentType:"application/json; charset=UTF-8",
 			dataType: "json",

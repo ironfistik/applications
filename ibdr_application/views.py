@@ -1,16 +1,19 @@
+import json
+
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from random import randint
 
 from ibdr_application.models import ibdr_applicate
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class ibd_apllicate(View):
+class Ibd_Apllicate(View):
     def get(self, request):
-        application = ibdr_applicate.objects.all()
+        application = Ibd_Apllicate.objects.all()
 
         search_number = request.GET.get("number_application", None)
         if search_number:
@@ -33,3 +36,28 @@ class ibd_apllicate(View):
             })
 
         return JsonResponse(result, safe=False)
+
+    def post(self, request):
+        application_data = json.loads(request.body)
+
+        create_number_applikation = randint(1, 3000)
+        print(application_data)
+        for v in application_data:
+            application = ibdr_applicate()
+
+            application.number_application = create_number_applikation
+            application.fio = v["fio"]
+            application.doljn = v["doljn"]
+            application.sudis_mail = v["sudis_mail"]
+            application.ip = v["ip"]
+            application.telephone = v["telephone"]
+            application.vid_uch = v["vid_uch"]
+            application.vid_zap = v["vid_zap"]
+            application.mej_reg = v["mej_reg"]
+
+            application.save()
+
+        return JsonResponse({
+            "id": application.id,
+            "text": application.fio
+        })
