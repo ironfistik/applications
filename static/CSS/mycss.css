@@ -1,0 +1,21 @@
+table{
+    border: 2px solid black;
+    width: 100%;
+    text-align:left;
+}
+
+th{
+    border: 2px solid black;
+    user-select: none;
+}
+
+tr{
+    border: 2px solid black;
+}
+
+td{border: 1px solid silver;}
+
+textarea{
+    width:100%;
+    resize: none;
+}

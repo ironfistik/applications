@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<head>
+<title>ИБД-Регион заявка</title>
+<link rel="stylesheet" href="../CSS/bootstrap.css">
+</head>
+
+<body>
+<h3 class="text-center p-3">ИБД-Р - форма регистрации</h3>
+<div class="form control mb-3 p-5">
+<form id="ibdr_reg">    
+    <table class="table table-hover table-bordered table-sm align-middle" id="table_ibdr_reg">
+        <tr>
+            <th>№ п/п</th>
+            <th>Фамилия, имя, отчество, служба, наименование подразделения *</th>
+            <th>Должность *</th>
+            <th>Почта СУДИС *</th>
+            <th>IP-адрес<sup>1</sup></th>
+            <th>Телефон</th>
+            <th>Виды учетов<sup>2</sup> *</th>
+            <th>Виды запросов *</th>
+            <th>Межрегиональный доступ (да/нет) *</th>
+        </tr>
+
+        <tr class = "line">
+			<td style="width:6vh"><input type="text" class="form-control" name="rownum" value="1" disabled></td>
+			<td class="text-center fio">
+				<textarea class="form-control" rows ="2" name="fio" onchange="deleteBlank(this)" placeholder="Иванов Иван Иванович,
+ОУР ОМВД России по Октябрьскому району г.Томска"></textarea>
+			</td> 
+			<td class="col-sm-1"><input class="form-control" type="text" name="doljn" placeholder="Начальник" onchange="deleteBlank(this)"></td> 	   
+			<td class="col-sm-1"><input class="form-control" type="email" name="sudis_mail" placeholder="iivanov@mvd.ru" onchange="deleteBlank(this)"></td> 
+			<td class="col-sm-1"><input class="form-control" type="text" name="ip" placeholder="10.05.202.99" value="" onchange="deleteBlank(this)"></td> 
+			<td class="col-sm-1"><input class="form-control " type="text" name="telephone" placeholder="8-(3822)-111-111" onchange="deleteBlank(this)"></td> 
+			
+			<td>
+				<select class="form-control" name="vid_uch[]" multiple>
+				<option value="РОЗЫСКНЫЕ">Розыскные</option>
+				<option value="КРИМИНАЛИСТИЧЕСКИЕ">Криминалистические</option>
+				<option value="СПРАВОЧНЫЕ">Справочные</option>
+				<option value="АБД ОСК (СТОРОЖОК)">АБД ОСК (Сторожок)</option>
+				<option value="ОСК">ОСК</option>
+				<option value="АБОНЕНТ СВЯЗИ">Абонент связи</option>
+				<option value="ДЕЖУРНЫЕ ЧАСТИ">Дежурные части</option>
+				</select>
+			</td>
+
+			<td>
+				<select class="form-control"  name="vid_zap[]" multiple>
+				<option value="ВВОД ДОКУМЕНТОВ">Ввод документов</option>
+				<option value="СПРАВОЧНЫЕ ЗАПРОСЫ">Справочные запросы</option>
+				<option value="ПОИСКОВЫЕ ЗАПРОСЫ">Поисковые запросы</option>
+				<option value="АДМПРАКТИКА(ВВОД)">Адмпрактика(ввод)</option>
+				<option value="ЗАДЕРЖАННЫЕ(ВВОД)">Задержанные(ввод)</option>
+				<option value="ДОСТАВЛЕННЫЕ(ВВОД)">Доставленные(ввод)</option>
+				<option value="НАРКОТИКИ(ВВОД)">Наркотики(ввод)</option>
+				<option value="СТАТИСТИКА(ВВОД)">Статистика(ввод)</option>
+				<option value="СТАТИСТИКА(ОМ)">Статистика(ОМ)</option>
+				<option value="МЕСТНЫЙ РОЗЫСК(WEB)">Местный розыск(Web)</option>
+				</select>
+			</td>
+           
+			<td class="col-sm-1">
+				<select class="form-select" name="mej_reg">
+				<option selected value = ""></option>
+				<option value="ДА">да</option>
+				<option value="НЕТ">нет</option>
+				</select>
+			</td> 
+        </tr>
+    </table>
+	
+	<button class="btn btn-primary mb-3" type="button" id="addrows">Добавить строчку</button>
+	<button class="btn btn-primary mb-3" type="button" id="dellrows">Удалить строчку</button>
+    <button class="btn btn-primary mb-3"onclick=pull() id="pull_forms" type="button">Сформировать заявку</button>
+	<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Инструкция по заполнению</button>
+
+</form>
+</div>
+
+<div id="my"></div>	<!--Сюда выводим результат запроса-->
+
+<!--МОДАЛЬНОЕ ОКНО ИНСТРУКЦИИ-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Инстукция по заполнению формы</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+			</div>
+			<div class="modal-body p-5">
+				Все поля с пометкой <b style="color:red">*</b> должны быть заполнены обязательно!<br><br>
+				<b>Виды учетов:</b><br>
+				<li>При выборе нескольких видов учета стоящик рядом, просто протяните мышкой выделив их.</li>
+				<li>При выборе нескольких видов учета стоящих не рядом выберете их с помощю сочетания клавиш ctrl + лкм.</li>
+				<li>Если вы выбрали Абонент связи - необходимо при подаче заявки приложить <b style="color:red">приказ о назначении сотрудника ответственным</b>.</li>
+				<li>Если вы выбрали ОСК - необходимо при подаче заявки приложить <b style="color:red">приказ, должностной регламент, ведомость</b>.</li>
+				<br>
+				<b>Виды запросов:</b>
+				<li>При выборе нескольких видов запросов стоящик рядом, просто протяните мышкой выделив их.</li>
+				<li>При выборе нескольких видов запросов стоящих не рядом выберете их с помощю сочетания клавиш ctrl + лкм.</li>
+				<li>Если вы выбрали Задержанные(ввод) - необходимо при подаче заявки приложить <b style="color:red">приказ, должностной регламент</b>.</li>
+				<li>Если вы выбрали Наркотики(ввод) - необходимо при подаче заявки приложить <b style="color:red">должностной регламент</b>.</li>
+				<li>Если вы выбрали Статистика(ввод) или Статистика(ОМ) - необходимо при подаче заявки приложить <b style="color:red">приказ,должностной регламент</b>.</li>
+				<br>
+				<b>При направлении заявки в ИЦ необходимо:</b> 
+				<li>прикрепить заявку в формате pdf.</li>
+				<li>прикрепить заявку в формате xlsx.</li>
+				<li>прикрепить необходимый перечень документов.</li>
+				<li>Направить заявку по СЭД в адрес начальника ИЦ УМВД России по Томской области.</li>
+				
+				<br>
+				<b style="color:red">ВНИМАНИЕ!!!</b>
+				<p style="color:red">В случае несоответствия заявки или отсутствия необходимого перечня документов, заявка будет отклонена без объяснения причин!</p>
+				
+				
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+
+<meta>
+<script src="../JS/jquery-3.6.0.min.js"></script>
+<script src="../JS/bootstrap.min.js"></script>
+<script src="../JS/del_space.js" type="text/javascript"></script>		<!-- js скрипт для удаления пробелов с полей-->
+<script src="../JS/add_rows.js"></script>		<!--Скрипт для кнопки добавить строчку-->
+<script src="../JS/del_rows.js"></script>		<!--Скрипт для кнопки удалить строчку-->
+<script src="../JS/pull_forms.js"></script>	<!--Скрипт для кнопки сформировать заявку-->
+</meta>
